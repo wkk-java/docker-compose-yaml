@@ -1,0 +1,30 @@
+version: '3.9'
+services:
+  admin-server:
+    image: wk-server:18082/admin-server:1.0.0-SNAPSHOT
+    networks:
+      - framework_network
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints:
+          - node.hostname == wk-server
+    ports:
+      - "2001:2001"
+    environment:
+      - TZ=Asia/Shanghai
+      - server.port=2001
+      - SECURITY_USER_PASSWORD=password123456
+      - spring.cloud.nacos.discovery.namespace=dev
+      - spring.cloud.nacos.discovery.ip=wk-server
+    extra_hosts:
+      wk-server1: 47.100.74.126
+      wk-server: 106.14.202.235
+      jr-server: 47.98.170.93
+
+networks:
+  framework_network:
+    external: true
+    name: framework_network

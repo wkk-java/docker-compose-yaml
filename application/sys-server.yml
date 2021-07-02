@@ -1,0 +1,29 @@
+version: '3.7'
+services:
+  sys-server:
+    image: wk-server:18082/sys-server:1.0.0-SNAPSHOT
+    networks:
+      - framework_network
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints:
+          - node.hostname == wk-server1
+    ports:
+      - "3000:3000"
+    environment:
+      - TZ=Asia/Shanghai
+      - server.port=3000
+      - SECURITY_USER_PASSWORD=password123456
+      - SPRING_PROFILES_ACTIVE=test
+      - spring.cloud.nacos.discovery.ip=wk-server1
+    extra_hosts:
+      wk-server1: 47.100.74.126
+      wk-server: 106.14.202.235
+      jr-server: 47.98.170.93
+
+networks:
+  framework_network:
+    external: true

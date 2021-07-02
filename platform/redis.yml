@@ -1,0 +1,38 @@
+version: '3.9'
+services:
+  redis:
+    image: redislabs/rebloom:latest
+    networks:
+      - framework_network
+    ports:
+      - 6379:6379
+    environment:
+      - TZ=Asia/Shanghai
+    configs:
+       - source: redis_config
+         target: /etc/redis.conf
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints:
+          - node.hostname == jr-server
+    command:
+      redis-server /etc/redis.conf
+    volumes:
+      - redis_data:/data
+networks:
+  framework_network:
+    driver: overlay
+    external: true
+volumes:
+  redis_data:
+    driver: local
+configs:
+  redis_config:
+    external: true
+
+#docker network create -d overlay framework_network --subnet 10.10.0.0/100 --gateway 10.10.0.1 --attachable
+
+#docker config create redis_config ./redis.conf

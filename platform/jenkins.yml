@@ -1,0 +1,30 @@
+version: '3.9'
+services:
+  jenkins:
+    image: jenkinsci/blueocean
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 60s
+      placement:
+        constraints:
+          - node.role == manager
+          - node.hostname == wk-server
+    environment:
+      - TZ=Asia/Shanghai
+    ports:
+      - 1080:8080
+      - 1085:50000
+    volumes:
+      - /var/data/jenkins:/var/jenkins_home
+      - /var/data/jenkins/run/docker.sock:/var/run/docker.sock
+    networks:
+      framework_network:
+        aliases:
+          - jenkins
+
+networks:
+  framework_network:
+      external: true

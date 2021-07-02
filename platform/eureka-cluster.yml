@@ -1,0 +1,66 @@
+version: '3.7'
+services:
+  eureka1:
+    image: wk-server:18082/eureka-server:1.0.0-SNAPSHOT
+    networks:
+      - framework_network
+    deploy:
+      restart_policy:
+        condition: on-failure
+      # 多节点部署在不同docker 节点服务器上
+      placement:
+        constraints: [node.role == manager]
+    ports:
+      - "2001:2001"
+    environment:
+      - EUREKA_SERVER_LIST=http://admin:password123456@eureka1:2001/eureka/,http://admin:password123456@eureka2:2002/eureka/,http://admin:password123456@eureka3:2003/eureka/
+      - SECURITY_USER=admin
+      - SECURITY_USER_PASSWORD=password123456
+      - SERVER_PORT=2001
+      - EUREKA_HOST_NAME=eureka1
+      - TZ=Asia/Shanghai
+
+  eureka2:
+    image: wk-server:18082/eureka-server:1.0.0-SNAPSHOT
+    networks:
+      - framework_network
+    deploy:
+      restart_policy:
+        condition: on-failure
+      # 多节点部署在不同docker 节点服务器上
+      placement:
+        constraints: [node.role == manager]
+    ports:
+      - "2002:2002"
+    environment:
+      - EUREKA_SERVER_LIST=http://admin:password123456@eureka1:2001/eureka/,http://admin:password123456@eureka2:2002/eureka/,http://admin:password123456@eureka3:2003/eureka/
+      - SECURITY_USER=admin
+      - SECURITY_USER_PASSWORD=password123456
+      - SERVER_PORT=2002
+      - EUREKA_HOST_NAME=eureka2
+      - TZ=Asia/Shanghai
+
+  eureka3:
+    image: wk-server:18082/eureka-server:1.0.0-SNAPSHOT
+    networks:
+      - framework_network
+    deploy:
+      restart_policy:
+        condition: on-failure
+      # 多节点部署在不同docker 节点服务器上
+      placement:
+        constraints: [node.role == manager]
+    ports:
+      - "2003:2003"
+    environment:
+      - EUREKA_SERVER_LIST=http://admin:password123456@eureka1:2001/eureka/,http://admin:password123456@eureka2:2002/eureka/,http://admin:password123456@eureka3:2003/eureka/
+      - SECURITY_USER=admin
+      - SECURITY_USER_PASSWORD=password123456
+      - SERVER_PORT=2003
+      - EUREKA_HOST_NAME=eureka3
+      - TZ=Asia/Shanghai
+
+networks:
+  framework_network:
+    driver: overlay
+    external: true

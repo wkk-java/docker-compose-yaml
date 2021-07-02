@@ -1,0 +1,49 @@
+rabbit1_cluster:
+  image: docker.io/rabbitmq
+  hostname: os1
+  ports:
+    - "5672:5672"
+    - "4369:4369"
+    - "1883:1883"
+    - "15672:15672"
+    - "25672:25672"
+  environment:
+    - RABBITMQ_DEFAULT_USER=guest 
+    - RABBITMQ_DEFAULT_PASS=guest
+    - RABBITMQ_ERLANG_COOKIE=myerlangcookie
+
+rabbit2_cluster:
+  image: docker.io/rabbitmq
+  hostname: os2
+  extra_hosts:
+    - "os1:192.168.171.136"
+  environment:
+   - CLUSTERED=true
+   - CLUSTER_WITH=rabbit1_cluster
+   - RAM_NODE=true
+   - RABBITMQ_ERLANG_COOKIE=myerlangcookie
+  ports:
+      - "5672:5672"
+      - "4369:4369"
+      - "1883:1883"
+      - "15672:15672"
+      - "25672:25672"
+      
+rabbit3_cluster:
+  image: docker.io/rabbitmq
+  hostname: os3
+  extra_hosts:
+    - "os1:192.168.171.136"
+    - "os2:192.168.171.137"
+  environment:
+   - CLUSTERED=true
+   - CLUSTER_WITH=rabbit1_cluster
+   - RAM_NODE=true
+   - RABBITMQ_ERLANG_COOKIE=myerlangcookie
+  ports:
+        - "5672:5672"
+        - "4369:4369"
+        - "1883:1883"
+        - "15672:15672"
+        - "25672:25672"
+

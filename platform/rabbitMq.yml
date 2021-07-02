@@ -1,0 +1,31 @@
+version: '3.9'
+services:
+  rabbit:
+    image: rabbitmq:management
+    networks:
+      framework_network:
+        aliases:
+          - rabbitmq
+    volumes:
+      - rabbitmq:/var/data/rabbitmq
+    ports:
+      - 15672:15672
+      - 5672:5672
+    environment:
+      - TZ=Asia/Shanghai
+      - RABBITMQ_DEFAULT_USER=guest 
+      - RABBITMQ_DEFAULT_PASS=guest
+      - RABBITMQ_ERLANG_COOKIE="james"
+    deploy:
+      restart_policy:
+        condition: on-failure
+      replicas: 1
+      placement:
+        constraints:
+          - node.hostname == jr-server
+networks:
+  framework_network:
+    external: true
+volumes:
+  rabbitmq:
+    driver: local

@@ -1,0 +1,31 @@
+version: '3.7'
+services:
+  dataway_server:
+    image: wk-server:18082/dataway-server:1.0.0-SNAPSHOT
+    networks:
+      framework_network:
+        aliases:
+          - dataway_server
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints:
+          - node.role == manager
+          - node.hostname == wk-server
+    ports:
+      - "3001:3001"
+    environment:
+      - TZ=Asia/Shanghai
+      - server.port=3001
+      - SECURITY_USER_PASSWORD=password123456
+      - SPRING_PROFILES_ACTIVE=test
+    extra_hosts:
+      wk-server1: 47.100.74.126
+      wk-server: 106.14.202.235
+      jr-server: 47.98.170.93
+
+networks:
+  framework_network:
+      external: true

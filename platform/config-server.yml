@@ -1,0 +1,30 @@
+version: '3.7'
+services:
+  configserver:
+    image: wk-server:18082/config-server:1.0.0-SNAPSHOT
+    networks:
+      framework_network:
+        aliases:
+          - configserver
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints:
+          - node.role == manager
+          - node.hostname == jr-server
+    ports:
+      - "2010:2010"
+    environment:
+      - TZ=Asia/Shanghai
+      - server.port=2010
+      - EUREKA_SERVER_LIST=http://admin:password123456@jr-server:2002/eureka/,http://admin:password123456@lj-server:2003/eureka/
+      - SECURITY_USER_PASSWORD=123456
+      - RABBITMQ_SERVER=wk-server1
+      - RABBITMQ_SERVER_USERNAME=guest
+      - RABBITMQ_SERVER_PASSWORD=guest
+
+networks:
+  framework_network:
+      external: true

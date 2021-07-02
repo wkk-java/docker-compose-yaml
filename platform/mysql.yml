@@ -1,0 +1,38 @@
+version: '3.9'
+services:
+  mysql:
+    image: mysql
+    networks:
+      framework_network:
+        aliases:
+          - mysql
+    volumes:
+      - mysql_data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 60s
+      placement:
+        constraints:
+          - node.hostname == wk-server1
+    environment:
+      - TZ=Asia/Shanghai
+      - MYSQL_ROOT_PASSWORD=123456
+volumes:
+  mysql_data:
+    driver: local
+
+networks:
+  framework_network:
+    external: true
+    
+#ALTER USER 'root'@'%' IDENTIFIED WITH mysql_native_password BY '123456';
+
+#添加远程登录用户
+#CREATE USER 'mysql' IDENTIFIED WITH mysql_native_password BY '123456';
+#GRANT ALL PRIVILEGES ON *.* TO 'mysql';

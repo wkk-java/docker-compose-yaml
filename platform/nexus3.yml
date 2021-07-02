@@ -1,0 +1,30 @@
+version: '3.9' 
+services: 
+  nexus: 
+    image: sonatype/nexus3
+    ports:
+      - "1000:8081"
+      - "18081:18081"
+      - "18082:18082"
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      resources:    # 资源控制 [cpu,mem]
+        limits:
+          #cpus: '0.2'
+          memory: 1800M
+      placement:
+        constraints:
+          - node.hostname == wk-server
+    environment:
+      - TZ=Asia/Shanghai
+    volumes: 
+      - /usr/data/nexus/nexus-data:/nexus-data
+    networks:
+      framework_network:
+        aliases:
+          - nexus3
+networks:
+  framework_network:
+      external: true
