@@ -23,16 +23,48 @@ services:
     environment:
       - TZ=Asia/Shanghai
       - MYSQL_ROOT_PASSWORD=123456
+    configs:
+      - source: mysql_config
+        target: /etc/mysql/my.cnf
 volumes:
   mysql_data:
     driver: local
 
+configs:
+  mysql_config:
+    external: true
+
 networks:
   framework_network:
     external: true
-    
-#ALTER USER 'root'@'%' IDENTIFIED WITH mysql_native_password BY '123456';
 
-#添加远程登录用户
-#CREATE USER 'mysql' IDENTIFIED WITH mysql_native_password BY '123456';
-#GRANT ALL PRIVILEGES ON *.* TO 'mysql';
+
+# 创建config
+# docker config create mysql_config ./mysql.cnf
+
+
+# ALTER USER 'root'@'%' IDENTIFIED WITH mysql_native_password BY 'newpwd';
+
+# 添加远程登录用户
+# CREATE USER 'mysql' IDENTIFIED WITH mysql_native_password BY '123456';
+# GRANT ALL PRIVILEGES ON *.* TO 'mysql';
+
+
+# 为从库服务器 设置用户名和密码
+# CREATE USER 'slave'@'wk-server' IDENTIFIED BY '123456';
+# grant replication slave, replication client on *.* to 'slave'@'wk-server'; --设置权限
+# flush privileges;  --权限生效
+
+#找到主节点的同步位置
+# show master status;
+
+# 暂停从节点同步
+# stop slave;
+
+# 配置主节点信息
+#  change master to
+#  master_host='wk-server',
+#  master_user='slave',
+#  master_password='pwd',
+#  MASTER_LOG_FILE='binlog.000085',
+#  MASTER_LOG_POS=156 ;
