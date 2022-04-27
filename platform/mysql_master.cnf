@@ -1,0 +1,27 @@
+[mysqld]
+pid-file        = /var/run/mysqld/mysqld.pid
+socket          = /var/run/mysqld/mysqld.sock
+datadir         = /var/lib/mysql
+secure-file-priv= NULL
+
+#开启慢日志
+slow_query_log = 1;　　
+#慢日志地址，缺省文件名host_name-slow.log
+slow_query_log_file=/var/lib/mysql/slow_query_sql.log　　　
+#运行时间超过该值的SQL会被记录，默认值>10，单位s(秒)
+long_query_time=5;　　
+log_output=FILE
+
+# Custom config should go here
+!includedir /etc/mysql/conf.d/
+
+# 服务id,同一局域网内注意要唯一
+server-id=101
+#开启日志
+log-bin=mysql-bin
+#设置需要同步的数据库
+binlog‐do‐db=order
+#屏蔽系统库同步
+binlog‐ignore‐db=mysql
+binlog‐ignore‐db=information_schema
+binlog‐ignore‐db=performance_schema

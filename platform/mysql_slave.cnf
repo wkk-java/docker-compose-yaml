@@ -1,0 +1,19 @@
+[mysqld]
+pid-file        = /var/run/mysqld/mysqld.pid
+socket          = /var/run/mysqld/mysqld.sock
+datadir         = /var/lib/mysql
+secure-file-priv= NULL
+
+# Custom config should go here
+!includedir /etc/mysql/conf.d/
+
+# 服务id,同一局域网内注意要唯一
+server-id=101
+#开启日志
+log-bin=mysql-bin
+#设置需要同步的数据库
+replicate_wild_do_table=order.%
+#屏蔽系统库同步
+replicate_wild_ignore_table=mysql.%
+replicate_wild_ignore_table=information_schema.%
+replicate_wild_ignore_table=performance_schema.%
